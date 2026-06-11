@@ -84,14 +84,23 @@ export default function Roulette({ onConfirm }) {
   const [confirmed, setConfirmed] = useState(false);
   const [duration, setDuration] = useState(4);
   const timersRef = useRef([]);
+  const tableRef = useRef(null);
 
   useEffect(() => () => timersRef.current.forEach(clearTimeout), []);
 
   // scroll tabla al número ganador cuando la rueda se detiene
   useEffect(() => {
     if (resultIdx !== null && !spinning) {
-      const el = document.querySelector(`.${styles.highlight}`);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const timer = setTimeout(() => {
+        const container = tableRef.current;
+        if (container) {
+          const row = container.querySelector('.' + styles.highlight);
+          if (row) {
+            container.scrollTo({ top: row.offsetTop - container.offsetHeight / 2, behavior: 'smooth' });
+          }
+        }
+      }, 150);
+      return () => clearTimeout(timer);
     }
   }, [resultIdx, spinning]);
 
@@ -185,7 +194,7 @@ export default function Roulette({ onConfirm }) {
           </div>
 
           {/* Columna tabla */}
-          <div className={styles.tableCol}>
+          <div className={styles.tableCol} ref={tableRef}>
             <table className={styles.table}>
               <thead><tr><th>#</th><th>Actividad</th></tr></thead>
               <tbody>
