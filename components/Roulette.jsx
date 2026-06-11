@@ -2,15 +2,25 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Card from '@/components/Card';
-import { OPTIONS, START_DATE } from '@/lib/config';
+import { CATEGORIES, START_DATE } from '@/lib/config';
 import styles from './Roulette.module.css';
 
 const ITEM_H = 64;
 const WIN_H = 192; // visible height = 3 items
 const REPEATS = 8; // pool size to allow long spins without running out
-const START_INDEX = OPTIONS.length * 2;
 
-const POOL = Array.from({ length: REPEATS }, () => OPTIONS).flat();
+// Aplanar categorías a [{ text, category }] y construir POOL
+function getAllOptions() {
+  return CATEGORIES.flatMap(cat =>
+    cat.options.map(opt => ({ text: opt, category: cat.name }))
+  );
+}
+
+const ALL_OPTIONS = getAllOptions();
+const OPTIONS_COUNT = ALL_OPTIONS.length;
+const START_INDEX = OPTIONS_COUNT * 2;
+
+const POOL = Array.from({ length: REPEATS }, () => ALL_OPTIONS.map(o => o.text)).flat();
 
 function getMonthsPassed() {
   const today = new Date();
@@ -51,6 +61,23 @@ function isCorrectDate() {
   return today.getDate() === START_DATE.getDate();
 }
 
+function getHeaderText() {
+  const label = getMonthsPassed();
+  if (!isCorrectDate()) {
+    return <>Faltan {getDaysUntilNext()} días para {label} 🥳 y haremos...</>;
+  }
+  // Es día 14 — ¿es aniversario exacto de año?
+  const today = new Date();
+  const months = (today.getFullYear() - START_DATE.getFullYear()) * 12 + today.getMonth() - START_DATE.getMonth();
+  const remaining = months % 12;
+  if (remaining === 0) {
+    // solo años enteros
+    const years = months / 12;
+    return <>Feliz aniversario {years} año{years > 1 ? 's' : ''} 🥳 y haremos...</>;
+  }
+  return <>Feliz {label} 🥳 y haremos...</>;
+}
+
 function offsetFor(index) {
   return index * ITEM_H - (WIN_H / 2 - ITEM_H / 2);
 }
@@ -84,8 +111,8 @@ export default function Roulette({ onConfirm }) {
     setCurrentIndex(START_INDEX);
 
     const loops = 4 + Math.floor(Math.random() * 2);
-    const extra = Math.floor(Math.random() * OPTIONS.length);
-    const targetIndex = START_INDEX + OPTIONS.length * loops + extra;
+    const extra = Math.floor(Math.random() * OPTIONS_COUNT);
+    const targetIndex = START_INDEX + OPTIONS_COUNT * loops + extra;
     const spinDuration = 3.0 + Math.random() * 0.8;
 
     // two rAF calls ensure the transition applies after the reset paints
@@ -98,7 +125,7 @@ export default function Roulette({ onConfirm }) {
         timersRef.current.push(
           setTimeout(() => {
             setSpinning(false);
-            setResult(OPTIONS[targetIndex % OPTIONS.length]);
+            setResult(ALL_OPTIONS[targetIndex % OPTIONS_COUNT]);
           }, spinDuration * 1000 + 50)
         );
       });
@@ -114,7 +141,7 @@ export default function Roulette({ onConfirm }) {
   return (
     <section className="page fade-in">
       <Card>
-        <div className="big-text">Faltan {getDaysUntilNext()} días para {getMonthsPassed()} 🥳 y haremos...</div>
+        <div className="big-text">{getHeaderText()}</div>
 
         <div className="divider" />
 
@@ -180,7 +207,10 @@ export default function Roulette({ onConfirm }) {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="20 6 9 17 4 12" />
               </svg>{' '}
-              {result}
+              <span style={{ fontWeight: 600 }}>{result.category}</span>
+            </div>
+            <div className={styles.resultBadge} style={{ marginTop: 8, fontSize: '0.95rem' }}>
+              {result.text}
             </div>
           </div>
         )}
