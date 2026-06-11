@@ -1,0 +1,105 @@
+/* Roulette — slot-machine style vertical scroller */
+.wrap {
+  margin: 20px auto 0;
+  width: 260px;
+}
+
+.window {
+  height: 192px; /* shows 3 items: 1 selected + 1 above + 1 below */
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--red);
+  box-shadow: 0 0 20px var(--red-faint);
+  position: relative;
+  background: var(--bg);
+}
+
+/* Selection bracket lines */
+.centerLineTop,
+.centerLineBottom {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: var(--red);
+  opacity: 0.2;
+  z-index: 3;
+  pointer-events: none;
+}
+.centerLineTop { top: calc(50% - 32px); }
+.centerLineBottom { top: calc(50% + 32px); }
+
+/* Fade edges for depth */
+.window::before,
+.window::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 72px;
+  z-index: 2;
+  pointer-events: none;
+}
+.window::before { top: 0; background: linear-gradient(to bottom, var(--bg) 5%, transparent); }
+.window::after { bottom: 0; background: linear-gradient(to top, var(--bg) 5%, transparent); }
+
+.track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: transform;
+}
+
+.item {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+  width: 260px;
+  opacity: 0.35;
+  transition: color 0.2s, opacity 0.2s, font-size 0.2s, font-weight 0.2s;
+}
+.item.near {
+  color: var(--text);
+  opacity: 0.6;
+}
+.item.selected {
+  color: var(--red);
+  opacity: 1;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.btnRow {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.resultBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--red-faint);
+  border: 1px solid var(--red);
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  color: var(--red);
+  margin: 16px 0 0;
+  font-weight: 500;
+}
+
+/* Blur effect until unlock date */
+.blur {
+  filter: blur(8px);
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
+}

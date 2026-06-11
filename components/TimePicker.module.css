@@ -1,0 +1,72 @@
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 22px 0 28px;
+  text-align: left;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 0.92rem;
+  color: var(--muted);
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+}
+.option::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--red-faint);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+.option:hover {
+  border-color: var(--red);
+  color: var(--text);
+}
+.option:hover::before { transform: scaleX(1); }
+
+.option.selected {
+  border-color: var(--red);
+  color: var(--red);
+  background: var(--red-faint);
+}
+.option.selected .radioDot { border-color: var(--red); }
+.option.selected .radioDot::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.radioDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--muted);
+  flex-shrink: 0;
+  position: relative;
+  transition: border-color 0.2s;
+  z-index: 1;
+}
+.radioDot::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: var(--red);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: all 0.2s ease;
+}
+
+.label { z-index: 1; }

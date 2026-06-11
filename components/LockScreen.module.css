@@ -1,0 +1,50 @@
+.lockIcon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 28px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lockIcon svg { width: 100%; height: 100%; }
+
+.inputWrap {
+  margin: 24px 0 20px;
+  position: relative;
+}
+
+.nameInput {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 1rem;
+  color: var(--text);
+  text-align: center;
+  letter-spacing: 0.12em;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.nameInput::placeholder {
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  font-size: 0.82rem;
+}
+.nameInput:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 18px var(--red-faint);
+}
+
+.errorMsg {
+  font-size: 0.75rem;
+  color: #c04040;
+  font-family: var(--font-fira), monospace;
+  margin-top: 10px;
+  min-height: 18px;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.errorMsg.show { opacity: 1; }

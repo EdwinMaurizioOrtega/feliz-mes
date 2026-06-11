@@ -1,0 +1,34 @@
+.msg {
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+
+.time { color: var(--red); }
+
+.addr {
+  font-size: 1rem;
+  color: var(--text);
+  padding: 16px 22px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: var(--font-fira), monospace;
+  line-height: 1;
+}
+
+.sym { color: var(--red); }
+
+.gifArea {
+  margin-top: 24px;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.gifArea img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+}
