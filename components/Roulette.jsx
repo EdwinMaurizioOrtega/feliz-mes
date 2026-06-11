@@ -198,14 +198,23 @@ export default function Roulette({ onConfirm }) {
             <table className={styles.table}>
               <thead><tr><th>#</th><th>Actividad</th></tr></thead>
               <tbody>
+                {/* Ganador al inicio */}
+                {resultIdx !== null && !spinning && (
+                  <tr className={styles.highlight}>
+                    <td className={styles.numCell}>{resultIdx + 1}</td>
+                    <td className={styles.optCell}>{ALL_OPTIONS[resultIdx].text}</td>
+                  </tr>
+                )}
                 {tableData.map((row, ri) =>
                   row.type === 'category' ? (
                     <tr key={ri} className={styles.catRow}><td colSpan={2}>{row.label}</td></tr>
                   ) : (
-                    <tr key={ri} className={resultIdx === row.idx && !spinning ? styles.highlight : ''}>
-                      <td className={styles.numCell}>{row.idx + 1}</td>
-                      <td className={styles.optCell}>{row.text}</td>
-                    </tr>
+                    row.idx !== resultIdx || spinning ? (
+                      <tr key={ri} className={resultIdx === row.idx && !spinning ? styles.highlight : ''}>
+                        <td className={styles.numCell}>{row.idx + 1}</td>
+                        <td className={styles.optCell}>{row.text}</td>
+                      </tr>
+                    ) : null
                   )
                 )}
               </tbody>
