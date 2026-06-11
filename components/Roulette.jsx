@@ -110,7 +110,7 @@ export default function Roulette({ onConfirm }) {
   function confirm() {
     if (resultIdx === null) return;
     setConfirmed(true);
-    timersRef.current.push(setTimeout(onConfirm, 900));
+    timersRef.current.push(setTimeout(() => onConfirm(ALL_OPTIONS[resultIdx]), 900));
   }
 
   // ── segmentos SVG (solo números) ──

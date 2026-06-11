@@ -5,7 +5,7 @@ import Card from '@/components/Card';
 import { TIMES } from '@/lib/config';
 import styles from './TimePicker.module.css';
 
-export default function TimePicker({ onConfirm }) {
+export default function TimePicker({ activity, onConfirm }) {
   const [selected, setSelected] = useState(null);
 
   return (
@@ -16,6 +16,17 @@ export default function TimePicker({ onConfirm }) {
           <br />
           puedes estar lista? <span className="heart">✦</span>
         </h1>
+
+        {activity && (
+          <div style={{
+            textAlign: 'center', marginBottom: '16px',
+            background: 'var(--red-faint)', border: '1px solid var(--red)',
+            borderRadius: '8px', padding: '10px 16px', fontSize: '0.85rem', color: 'var(--red)',
+          }}>
+            <div style={{ fontWeight: 600 }}>{activity.category}</div>
+            <div style={{ marginTop: 4 }}>{activity.text}</div>
+          </div>
+        )}
 
         <div className={styles.options}>
           {TIMES.map((time) => (
