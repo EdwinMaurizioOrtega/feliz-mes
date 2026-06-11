@@ -72,8 +72,8 @@ function getHeaderText() {
 }
 
 // ── componente ───────────────────────────────────────────
-const R = 132;
-const PAD = 12;
+const R = 150;
+const PAD = 20;
 const VIEW = (R + PAD) * 2;
 const CX = VIEW / 2;
 
@@ -120,7 +120,7 @@ export default function Roulette({ onConfirm }) {
       const catIdx = getCategoryIndex(i);
       const color = CAT_COLORS[catIdx % CAT_COLORS.length];
       const mid = i * SEG_ANGLE + SEG_ANGLE / 2;
-      const p = polar(mid, R * 0.72);
+      const p = polar(mid, R * 0.75);
       items.push({ i, path: segmentPath(i, R), color, mid, tx: p.x, ty: p.y });
     }
     return items;
