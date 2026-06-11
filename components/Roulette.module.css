@@ -1,87 +1,91 @@
-/* Roulette — slot-machine style vertical scroller */
+/* Ruleta circular — Rueda de la Fortuna */
+
 .wrap {
-  margin: 20px auto 0;
-  width: 260px;
-}
-
-.window {
-  height: 192px; /* shows 3 items: 1 selected + 1 above + 1 below */
-  overflow: hidden;
-  border-radius: 12px;
-  border: 1px solid var(--red);
-  box-shadow: 0 0 20px var(--red-faint);
-  position: relative;
-  background: var(--bg);
-}
-
-/* Selection bracket lines */
-.centerLineTop,
-.centerLineBottom {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  height: 1px;
-  background: var(--red);
-  opacity: 0.2;
-  z-index: 3;
-  pointer-events: none;
-}
-.centerLineTop { top: calc(50% - 32px); }
-.centerLineBottom { top: calc(50% + 32px); }
-
-/* Fade edges for depth */
-.window::before,
-.window::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 72px;
-  z-index: 2;
-  pointer-events: none;
-}
-.window::before { top: 0; background: linear-gradient(to bottom, var(--bg) 5%, transparent); }
-.window::after { bottom: 0; background: linear-gradient(to top, var(--bg) 5%, transparent); }
-
-.track {
+  margin: 24px auto 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* Contenedor de la rueda + aguja */
+.wheelContainer {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+/* Aguja fija arriba */
+.needle {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 26px solid var(--red);
+  filter: drop-shadow(0 0 6px var(--red-faint));
+  pointer-events: none;
+}
+
+/* Rueda SVG */
+.wheel {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  box-shadow:
+    0 0 30px var(--red-faint),
+    0 0 60px rgba(255, 50, 85, 0.12),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.06);
   will-change: transform;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4));
 }
 
-.item {
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.95rem;
-  font-weight: 400;
-  color: var(--muted);
-  letter-spacing: 0.03em;
-  flex-shrink: 0;
-  width: 260px;
-  opacity: 0.35;
-  transition: color 0.2s, opacity 0.2s, font-size 0.2s, font-weight 0.2s;
-}
-.item.near {
-  color: var(--text);
-  opacity: 0.6;
-}
-.item.selected {
-  color: var(--red);
-  opacity: 1;
-  font-size: 1.05rem;
-  font-weight: 600;
+/* Blur si no es la fecha correcta */
+.blur {
+  filter: blur(8px) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4));
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
 }
 
+/* Segmentos */
+.segment {
+  transition: opacity 0.2s;
+}
+.segment:hover {
+  opacity: 0.85;
+}
+
+/* Texto dentro de segmentos */
+.segmentText {
+  font-size: 10px;
+  fill: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.02em;
+}
+
+/* Centro de la rueda */
+.centerDot {
+  fill: var(--bg);
+  stroke: var(--red);
+  stroke-width: 2px;
+  filter: drop-shadow(0 0 4px var(--red-faint));
+}
+
+/* Botones */
 .btnRow {
   display: flex;
   gap: 12px;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 24px;
 }
 
+/* Badge de resultado */
 .resultBadge {
   display: inline-flex;
   align-items: center;
@@ -94,12 +98,21 @@
   color: var(--red);
   margin: 16px 0 0;
   font-weight: 500;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Blur effect until unlock date */
-.blur {
-  filter: blur(8px);
-  opacity: 0.7;
-  pointer-events: none;
-  user-select: none;
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Resultado confirmado */
+.resultWrap {
+  text-align: center;
+  animation: fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
