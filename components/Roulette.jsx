@@ -87,6 +87,14 @@ export default function Roulette({ onConfirm }) {
 
   useEffect(() => () => timersRef.current.forEach(clearTimeout), []);
 
+  // scroll tabla al número ganador cuando la rueda se detiene
+  useEffect(() => {
+    if (resultIdx !== null && !spinning) {
+      const el = document.querySelector(`.${styles.highlight}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [resultIdx, spinning]);
+
   function spin() {
     if (spinning) return;
     setSpinning(true);
