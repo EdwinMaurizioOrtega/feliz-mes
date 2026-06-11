@@ -114,7 +114,7 @@ export default function Roulette({ onConfirm }) {
   return (
     <section className="page fade-in">
       <Card>
-        <div className="big-text">Faltan {getDaysUntilNext()} días para {getMonthsPassed()} meses 🥳 y haremos...</div>
+        <div className="big-text">Faltan {getDaysUntilNext()} días para {getMonthsPassed()} 🥳 y haremos...</div>
 
         <div className="divider" />
 
