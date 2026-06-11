@@ -1,118 +1,53 @@
-/* Ruleta circular — Rueda de la Fortuna */
-
-.wrap {
-  margin: 24px auto 0;
+/* Ruleta circular + tabla lateral */
+.layout {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Contenedor de la rueda + aguja */
-.wheelContainer {
-  position: relative;
-  width: 300px;
-  height: 300px;
-}
-
-/* Aguja fija arriba */
-.needle {
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-  width: 0;
-  height: 0;
-  border-left: 14px solid transparent;
-  border-right: 14px solid transparent;
-  border-top: 26px solid var(--red);
-  filter: drop-shadow(0 0 6px var(--red-faint));
-  pointer-events: none;
-}
-
-/* Rueda SVG */
-.wheel {
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  box-shadow:
-    0 0 30px var(--red-faint),
-    0 0 60px rgba(255, 50, 85, 0.12),
-    inset 0 0 0 2px rgba(255, 255, 255, 0.06);
-  will-change: transform;
-  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4));
-}
-
-/* Blur si no es la fecha correcta */
-.blur {
-  filter: blur(8px) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4));
-  opacity: 0.7;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Segmentos */
-.segment {
-  transition: opacity 0.2s;
-}
-.segment:hover {
-  opacity: 0.85;
-}
-
-/* Texto dentro de segmentos */
-.segmentText {
-  font-size: 10px;
-  fill: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-  pointer-events: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  letter-spacing: 0.02em;
-}
-
-/* Centro de la rueda */
-.centerDot {
-  fill: var(--bg);
-  stroke: var(--red);
-  stroke-width: 2px;
-  filter: drop-shadow(0 0 4px var(--red-faint));
-}
-
-/* Botones */
-.btnRow {
-  display: flex;
-  gap: 12px;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
   justify-content: center;
-  margin-top: 24px;
 }
 
-/* Badge de resultado */
+.wheelCol { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+.wheelContainer { position: relative; width: 280px; height: 280px; }
+
+.needle {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  z-index: 3; width: 0; height: 0;
+  border-left: 12px solid transparent; border-right: 12px solid transparent;
+  border-top: 22px solid var(--red);
+  filter: drop-shadow(0 0 6px var(--red-faint)); pointer-events: none;
+}
+
+.wheel {
+  width: 280px; height: 280px; border-radius: 50%;
+  box-shadow: 0 0 30px var(--red-faint), 0 0 60px rgba(255, 50, 85, 0.12);
+  will-change: transform; filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4));
+}
+
+.blur { filter: blur(8px) drop-shadow(0 4px 20px rgba(0,0,0,0.4)) !important; opacity: 0.7; pointer-events: none; user-select: none; }
+
+.segmentText { font-size: 10px; fill: rgba(255,255,255,0.95); font-weight: 700; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+.centerDot { fill: var(--bg); stroke: var(--red); stroke-width: 2px; filter: drop-shadow(0 0 4px var(--red-faint)); }
+
+.tableCol { flex: 1; min-width: 220px; max-width: 340px; max-height: 380px; overflow-y: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.table th { text-align: left; padding: 4px 8px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.table td { padding: 5px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.3s; }
+.catRow td { font-weight: 700; font-size: 0.78rem; padding-top: 8px; color: var(--text); }
+.numCell { width: 32px; text-align: center; font-weight: 700; color: var(--muted); }
+.optCell { color: var(--text); }
+
+.highlight td { background: var(--red-faint) !important; color: var(--red) !important; font-weight: 600; border-radius: 4px; }
+
+.btnRow { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
+
 .resultBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--red-faint);
-  border: 1px solid var(--red);
-  border-radius: 8px;
-  padding: 8px 18px;
-  font-size: 0.9rem;
-  color: var(--red);
-  margin: 16px 0 0;
-  font-weight: 500;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--red-faint); border: 1px solid var(--red); border-radius: 8px;
+  padding: 8px 18px; font-size: 0.9rem; color: var(--red);
+  margin: 16px 0 0; font-weight: 500;
   animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
-@keyframes popIn {
-  0% { transform: scale(0); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* Resultado confirmado */
-.resultWrap {
-  text-align: center;
-  animation: fadeUp 0.5s ease;
-}
-
-@keyframes fadeUp {
-  0% { opacity: 0; transform: translateY(12px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
+@keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.resultWrap { text-align: center; animation: fadeUp 0.5s ease; }
+@keyframes fadeUp { 0% { opacity: 0; transform: translateY(12px); } 100% { opacity: 1; transform: translateY(0); } }
