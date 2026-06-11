@@ -210,16 +210,6 @@ export default function Roulette({ onConfirm }) {
                   row.type === 'category' ? (
                     <tr key={ri} className={styles.catRow}><td colSpan={2}>{row.label}</td></tr>
                   ) : (
-                    <tr key={ri} className={resultIdx === row.idx && !spinning ? styles.highlight : ''}>
-                      <td className={styles.numCell}>{row.idx + 1}</td>
-                      <td className={styles.optCell}>{row.text}</td>
-                    </tr>
-                  )
-                )}
-              </tbody>
-            </table>
-          </div>
-                  ) : (
                     row.idx !== resultIdx || spinning ? (
                       <tr key={ri} className={resultIdx === row.idx && !spinning ? styles.highlight : ''}>
                         <td className={styles.numCell}>{row.idx + 1}</td>
