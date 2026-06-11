@@ -195,19 +195,30 @@ export default function Roulette({ onConfirm }) {
 
           {/* Columna tabla */}
           <div className={styles.tableCol} ref={tableRef}>
+            {/* Burbuja ganadora */}
+            {resultIdx !== null && !spinning && (
+              <div className={styles.winBubble}>
+                <div className={styles.winBubbleNum}>#{resultIdx + 1}</div>
+                <div className={styles.winBubbleCat}>{ALL_OPTIONS[resultIdx].category}</div>
+                <div className={styles.winBubbleText}>{ALL_OPTIONS[resultIdx].text}</div>
+              </div>
+            )}
             <table className={styles.table}>
               <thead><tr><th>#</th><th>Actividad</th></tr></thead>
               <tbody>
-                {/* Ganador al inicio */}
-                {resultIdx !== null && !spinning && (
-                  <tr className={styles.highlight}>
-                    <td className={styles.numCell}>{resultIdx + 1}</td>
-                    <td className={styles.optCell}>{ALL_OPTIONS[resultIdx].text}</td>
-                  </tr>
-                )}
                 {tableData.map((row, ri) =>
                   row.type === 'category' ? (
                     <tr key={ri} className={styles.catRow}><td colSpan={2}>{row.label}</td></tr>
+                  ) : (
+                    <tr key={ri} className={resultIdx === row.idx && !spinning ? styles.highlight : ''}>
+                      <td className={styles.numCell}>{row.idx + 1}</td>
+                      <td className={styles.optCell}>{row.text}</td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
                   ) : (
                     row.idx !== resultIdx || spinning ? (
                       <tr key={ri} className={resultIdx === row.idx && !spinning ? styles.highlight : ''}>

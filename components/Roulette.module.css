@@ -72,6 +72,52 @@
   margin-top: 20px;
 }
 
+/* ── Burbuja ganadora ── */
+.winBubble {
+  background: linear-gradient(135deg, var(--red-faint), rgba(255,50,85,0.15));
+  border: 2px solid var(--red);
+  border-radius: 20px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  text-align: center;
+  position: relative;
+  animation: bubbleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.winBubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid var(--red);
+}
+.winBubbleNum {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--red);
+  line-height: 1;
+}
+.winBubbleCat {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--red);
+  margin-top: 4px;
+}
+.winBubbleText {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+@keyframes bubbleIn {
+  0% { transform: scale(0) translateY(20px); opacity: 0; }
+  60% { transform: scale(1.08) translateY(-4px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
 .resultBadge {
   display: inline-flex;
   align-items: center;
