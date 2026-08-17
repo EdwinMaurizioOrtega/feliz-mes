@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Card from '@/components/Card';
 import { CATEGORIES, START_DATE } from '@/lib/config';
+import { monthsBetween, isAnniversaryDay, nextAnniversary, daysUntil, formatDuration } from '@/lib/date';
 import styles from './Roulette.module.css';
 
 // ── helpers ──────────────────────────────────────────────
@@ -42,33 +43,20 @@ function segmentPath(index, r) {
 }
 
 // ── helpers fecha ────────────────────────────────────────
-function getMonthsPassed() {
-  const today = new Date();
-  let m = (today.getFullYear() - START_DATE.getFullYear()) * 12 + today.getMonth() - START_DATE.getMonth();
-  m = Math.max(0, m);
-  const y = Math.floor(m / 12), rem = m % 12;
-  let r = '';
-  if (y > 0) r += `${y} año${y > 1 ? 's' : ''} `;
-  if (rem > 0) r += `${rem} mes${rem > 1 ? 'es' : ''}`;
-  return r.trim();
-}
-function getDaysUntilNext() {
-  const today = new Date();
-  const n = new Date(today.getFullYear(), today.getMonth(), START_DATE.getDate());
-  if (n <= today) n.setMonth(n.getMonth() + 1);
-  return Math.ceil((n - today) / 86400000);
-}
-function isCorrectDate() { return new Date().getDate() === START_DATE.getDate(); }
-function getHeaderText() {
-  const label = getMonthsPassed();
-  if (!isCorrectDate()) return <>Faltan {getDaysUntilNext()} días para {label} 🥳 y haremos...</>;
-  const today = new Date();
-  const months = (today.getFullYear() - START_DATE.getFullYear()) * 12 + today.getMonth() - START_DATE.getMonth();
+function getHeaderText(today) {
+  if (!isAnniversaryDay(START_DATE, today)) {
+    const next = nextAnniversary(START_DATE, today);
+    const days = daysUntil(next, today);
+    const label = formatDuration(monthsBetween(START_DATE, next));
+    return `Faltan ${days} día${days > 1 ? 's' : ''} para ${label} 🥳 y haremos...`;
+  }
+  const months = monthsBetween(START_DATE, today);
+  if (months === 0) return 'Feliz día uno 🥳 y haremos...';
   if (months % 12 === 0) {
     const y = months / 12;
-    return <>Feliz aniversario {y} año{y > 1 ? 's' : ''} 🥳 y haremos...</>;
+    return `Feliz aniversario ${y} año${y > 1 ? 's' : ''} 🥳 y haremos...`;
   }
-  return <>Feliz {label} 🥳 y haremos...</>;
+  return `Feliz ${formatDuration(months)} 🥳 y haremos...`;
 }
 
 // ── componente ───────────────────────────────────────────
@@ -83,10 +71,19 @@ export default function Roulette({ onConfirm }) {
   const [resultIdx, setResultIdx] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
   const [duration, setDuration] = useState(4);
+  const [today, setToday] = useState(null); // se calcula en el cliente para no romper la hidratación
   const timersRef = useRef([]);
   const tableRef = useRef(null);
 
+  useEffect(() => setToday(new Date()), []);
   useEffect(() => () => timersRef.current.forEach(clearTimeout), []);
+
+  const headerText = useMemo(() => (today ? getHeaderText(today) : '\u00A0'), [today]);
+  const canSpin = today !== null && isAnniversaryDay(START_DATE, today);
+  const daysLeft = useMemo(
+    () => (today ? daysUntil(nextAnniversary(START_DATE, today), today) : 0),
+    [today]
+  );
 
   // scroll tabla al número ganador cuando la rueda se detiene
   useEffect(() => {
@@ -157,7 +154,7 @@ export default function Roulette({ onConfirm }) {
   return (
     <section className="page fade-in">
       <Card>
-        <div className="big-text">{getHeaderText()}</div>
+        <div className="big-text">{headerText}</div>
         <div className="divider" />
 
         <div className={styles.layout}>
@@ -165,7 +162,7 @@ export default function Roulette({ onConfirm }) {
           <div className={styles.wheelCol}>
             <div className={styles.wheelContainer}>
               <div className={styles.needle} />
-              <svg viewBox={`0 0 ${VIEW} ${VIEW}`} className={`${styles.wheel} ${!isCorrectDate() ? styles.blur : ''}`}>
+              <svg viewBox={`0 0 ${VIEW} ${VIEW}`} className={`${styles.wheel} ${!canSpin ? styles.blur : ''}`}>
                 <g transform={`translate(${CX},${CX}) rotate(${rotation})`}
                    style={{ transition: spinning ? `transform ${duration}s cubic-bezier(0.15,0.8,0.25,1.0)` : 'none' }}>
                   {segments.map(s => (
@@ -181,8 +178,8 @@ export default function Roulette({ onConfirm }) {
             </div>
 
             <div className={styles.btnRow}>
-              <button className="btn" onClick={spin} disabled={spinning || !isCorrectDate()}
-                      title={!isCorrectDate() ? 'Solo puedes girar el 14' : ''}>
+              <button className="btn" onClick={spin} disabled={spinning || !canSpin}
+                      title={!canSpin ? 'Solo puedes girar el 14' : ''}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
                 </svg>{' '}girar
@@ -223,10 +220,10 @@ export default function Roulette({ onConfirm }) {
           </div>
         </div>
 
-        {!isCorrectDate() && <div className="divider" />}
-        {!isCorrectDate() && (
+        {!canSpin && <div className="divider" />}
+        {!canSpin && (
           <p style={{ textAlign: 'center', color: '#888', fontSize: '14px', marginTop: '16px' }}>
-            ¡Espera al 14 para girar! Faltan {getDaysUntilNext()} días 🎉
+            ¡Espera al 14 para girar! Faltan {daysLeft} día{daysLeft > 1 ? 's' : ''} 🎉
           </p>
         )}
 
